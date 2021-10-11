@@ -1,16 +1,62 @@
-# This is a sample Python script.
+import pygame
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+pygame.init()
 
+# game window
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
 
+# Create game window
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption('Castle Defender')
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+clock = pygame.time.Clock()
+FPS = 60
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+# load images
+bg = pygame.image.load('img/bg.png').convert_alpha()
+# castle
+castle_img_100 = pygame.image.load('img/castle/castle_100.png').convert_alpha()
+
+# Castle Class
+class Castle():
+    def __init__(self, image100, x, y, scale):
+        self.health = 1000
+        self.max_health = self.health
+
+        width = image100.get_width()
+        height = image100.get_height()
+
+        self.image100 = pygame.transform.scale(image100, (int(width * scale), int(height * scale)))
+        self.rect = self.image100.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def draw(self):
+        self.image = self.image100
+        screen.blit(self.image, self.rect)
+
+# create castle
+castle = Castle(castle_img_100, SCREEN_WIDTH - 250, SCREEN_HEIGHT - 300, 0.2)
+
+# game loop
+run = True
+while run:
+
+    clock.tick(FPS)
+
+    screen.blit(bg, (0, 0))
+
+    # draw castle
+    castle.draw()
+
+    # event handler
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+
+    # update display window
+    pygame.display.update()
+
+pygame.quit()
