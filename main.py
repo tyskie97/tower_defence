@@ -1,4 +1,5 @@
 import pygame
+import math
 
 pygame.init()
 
@@ -18,6 +19,14 @@ FPS = 60
 bg = pygame.image.load('img/bg.png').convert_alpha()
 # castle
 castle_img_100 = pygame.image.load('img/castle/castle_100.png').convert_alpha()
+# bullet img
+bullet_img = pygame.image.load('img/bullet.png')
+b_w = bullet_img.get_width()
+b_h = bullet_img.get_height()
+bullet_img = pygame.transform.scale(bullet_img, (int(b_w * 0.075), (int(b_h * 0.075))))
+
+# define colours
+WHITE = (255, 255, 255)
 
 # Castle Class
 class Castle():
@@ -33,9 +42,24 @@ class Castle():
         self.rect.x = x
         self.rect.y = y
 
+    def shoot(self):
+        pos = pygame.mouse.get_pos()
+        x_distance = pos[0] - self.rect.midleft[0]
+        y_distance = -(pos[1] - self.rect.midleft[1])
+        self.angle = math.degrees(math.atan2(y_distance, x_distance))
+        pygame.draw.line(screen, WHITE, (self.rect.midleft), (pos))
+
     def draw(self):
         self.image = self.image100
         screen.blit(self.image, self.rect)
+
+# bullet class
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self, image, x ,y ,angle):
+        self.image = image
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
 # create castle
 castle = Castle(castle_img_100, SCREEN_WIDTH - 250, SCREEN_HEIGHT - 300, 0.2)
@@ -50,6 +74,7 @@ while run:
 
     # draw castle
     castle.draw()
+    castle.shoot()
 
     # event handler
     for event in pygame.event.get():
